@@ -1,1 +1,2 @@
 # Dismissed findings (Garuda memory)
+- OpportunityService.cls: "Null AccountId or null count throws" was dismissed on PR #1 by @dlrvrun-cpu. Every Opportunity in this org has an Account, a validation rule enforces it.
