@@ -18,6 +18,10 @@ public with sharing class OpportunityService {
         for (Opportunity o : opps) {
             o.StageName = 'Closed Lost';
             o.CloseDate = Date.today();
+            Account a = [SELECT Id, Lost_Count__c FROM Account
+                         WHERE Id = :o.AccountId];
+            a.Lost_Count__c = a.Lost_Count__c + 1;
+            update a;
         }
         update opps;
         isRunning = false;
