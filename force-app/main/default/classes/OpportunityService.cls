@@ -15,15 +15,19 @@ public with sharing class OpportunityService {
             return;
         }
         isRunning = true;
+        Set<Id> accountIds = new Set<Id>();
         for (Opportunity o : opps) {
             o.StageName = 'Closed Lost';
             o.CloseDate = Date.today();
-            Account a = [SELECT Id, Lost_Count__c FROM Account
-                         WHERE Id = :o.AccountId];
-            a.Lost_Count__c = a.Lost_Count__c + 1;
-            update a;
+            accountIds.add(o.AccountId);
+        }
+        Map<Id, Account> accounts = OpportunitySelector.selectAccountsWithCounts(accountIds);
+        for (Opportunity o : opps) {
+            Account a = accounts.get(o.AccountId);
+            a.Lost_Count__c = (a.Lost_Count__c == null ? 0 : a.Lost_Count__c) + 1;
         }
         update opps;
+        update accounts.values();
         isRunning = false;
     }
 
